@@ -121,7 +121,7 @@ def get_product_info(links):
                 writer.writerow(['', 'simple', '', title, 1, 0, 'visible', '', final_description, '', '', '', '', 1, '',
                                  '', '', 0, '',
                                  '', '', '', '', '', price[0], categories, tags, '', img, '', '', '', '', '', '',
-                                 'attribute1',
+                                 '',
                                  '', '', '', '',
                                  '', '', '', '', ''])
 
