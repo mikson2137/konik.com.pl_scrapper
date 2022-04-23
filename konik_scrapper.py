@@ -111,9 +111,9 @@ def get_product_info(links):
             img = soup.find(id="img_main_0")
             img = img['data-zoom-image']
 
-            print(render_JS(URL))
 
-            attributes = soup.find(class_="rc-page-pinfo")
+
+
 
 
             with open('products.csv', 'a', newline='') as file:
@@ -125,11 +125,6 @@ def get_product_info(links):
                                  '', '', '', '',
                                  '', '', '', '', ''])
 
-def render_JS(URL):
-    session = HTMLSession()
-    r = session.get(URL)
-    r.html.render()
-    return r.html.text
 
 
 if __name__ == "__main__":
