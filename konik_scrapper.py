@@ -1,14 +1,14 @@
 import csv
 import re
-from requests_html import HTMLSession
+
 import requests
 from bs4 import BeautifulSoup
 
 
 def main():
-    # links = get_links()
-    links = [
-        'https://konik.com.pl/p/71/7521651/uwiaz-eskadron-z-kolekcji-platinum-2016-panic-coral-uwiazy-kantary-uwiazy-dla-konia.html']
+    print("Działa, zbiera linki")
+    links = get_links()
+    # links = ['https://konik.com.pl/Uwiaz-REGULAR-KH-Black-Week-Exclusive-Eskadron-black']
     get_product_info(links)
 
 
@@ -17,7 +17,7 @@ def get_links():
     Returns list of links to all products from link
     :return:
     """
-    URL = "https://konik.com.pl/SPRENGER"
+    URL = "https://konik.com.pl/eskadron"
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
 
@@ -29,10 +29,9 @@ def get_links():
     links = []
     for i in range(0, int(how_many_pages[0]) + 1):
         to_be_fixed = []
-
+        # print(f"{URL},{i}.html")
         if i != 0:
-            URL = f"https://konik.com.pl/eskadron,{i}.html"
-            page = requests.get(URL)
+            page = requests.get(f"{URL},{i}.html")
             soup = BeautifulSoup(page.content, "html.parser")
         products = soup.select("a[data-correct=\"product-photo-1\"]")
         for product in products:
@@ -93,6 +92,13 @@ def get_product_info(links):
                 price = is_on_sale
                 price = price.replace(',', '.').replace(" PLN", "")
             price = [line for line in price.split('\n') if line.strip() != '']
+            price = price[0]
+
+            if "Model" in price:
+                price1 = soup.find(class_="price_1")
+                price2 = soup.find(class_="price_2")
+                price = price1.getText() + price2.getText()
+                price = price.replace(',', '.')
 
             categories = soup.find(class_="breadcrumb-ajax")
             categories = categories.getText()
@@ -111,20 +117,14 @@ def get_product_info(links):
             img = soup.find(id="img_main_0")
             img = img['data-zoom-image']
 
-
-
-
-
-
             with open('products.csv', 'a', newline='') as file:
                 writer = csv.writer(file, delimiter='\t')
                 writer.writerow(['', 'simple', '', title, 1, 0, 'visible', '', final_description, '', '', '', '', 1, '',
                                  '', '', 0, '',
-                                 '', '', '', '', '', price[0], categories, tags, '', img, '', '', '', '', '', '',
+                                 '', '', '', '', '', price, categories, tags, '', img, '', '', '', '', '', '',
                                  '',
                                  '', '', '', '',
                                  '', '', '', '', ''])
-
 
 
 if __name__ == "__main__":
